@@ -1,0 +1,6 @@
+<resources>
+    <color name="background_black">#121212</color> <color name="card_grey">#2F2F2F</color>
+    <color name="accent_purple">#7129C3</color>
+    <color name="accent_blue">#6EB1EF</color>
+    <color name="text_white">#EEEEEE</color>
+</resources>
