@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-
+import retrofit2.http.GET
 class TreinoAdapter(private val lista: List<Treino>) : RecyclerView.Adapter<TreinoAdapter.TreinoViewHolder>() {
 
     // Cria o visual: Infla o seu XML do card
@@ -37,7 +37,8 @@ class TreinoAdapter(private val lista: List<Treino>) : RecyclerView.Adapter<Trei
         if (atual >= total) {
             holder.imageStatusStart.alpha = 1f
             holder.tvStatus.visibility = View.GONE
-        }else if(atual == 0){
+        }
+        else if(atual == 0){
             holder.imageStatusStart.alpha = 0f
             holder.imageStatusStop.alpha = 1f
             holder.tvStatus.visibility = View.GONE
