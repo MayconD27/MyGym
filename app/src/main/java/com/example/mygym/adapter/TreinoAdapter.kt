@@ -1,4 +1,4 @@
-package com.example.mygym
+package com.example.mygym.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,8 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import retrofit2.http.GET
-class TreinoAdapter(private val lista: List<Treino>) : RecyclerView.Adapter<TreinoAdapter.TreinoViewHolder>() {
+import com.example.mygym.R
+import com.example.mygym.`class`.Treino
+
+class TreinoAdapter(private val lista: List<Treino>, private val onItemClick: (Treino) -> Unit) : RecyclerView.Adapter<TreinoAdapter.TreinoViewHolder>() {
 
     // Cria o visual: Infla o seu XML do card
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TreinoViewHolder {
@@ -21,11 +23,15 @@ class TreinoAdapter(private val lista: List<Treino>) : RecyclerView.Adapter<Trei
         val imageBackground: ImageView = view.findViewById(R.id.img_background_muscle)
         val imageStatusStart : ImageView = view.findViewById(R.id.img_status_icon_finish)
         val imageStatusStop : ImageView = view.findViewById(R.id.img_status_icon_stop)
+
     }
 
     // Alimenta o visual: Pega os dados da lista e coloca nos TextViews
     override fun onBindViewHolder(holder: TreinoViewHolder, position: Int) {
         val treino = lista[position]
+        holder.itemView.setOnClickListener {
+            onItemClick(treino)
+        }
         holder.imageBackground.setImageResource(treino.icone)
         holder.tvTitulo.text = treino.nome
         holder.tvProgress.text = treino.andamento

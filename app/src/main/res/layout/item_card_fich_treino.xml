@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    android:layout_marginVertical="8dp"
+    app:cardBackgroundColor="#2F2F2F"
+    app:cardCornerRadius="20dp"
+    app:strokeWidth="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/ftv_workout_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
+            android:text="Supino inclinado"
+            android:textColor="#EEEEEE"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/ftv_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10/12 rep."
+            android:textColor="@color/accent_blue"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@id/ftv_workout_title"
+            app:layout_constraintTop_toBottomOf="@id/ftv_workout_title"
+            />
+        <FrameLayout
+            android:id="@+id/frame_status"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/shape_circle_blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/img_ft_status_icon_finish"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_check"
+                android:alpha="0"
+                app:tint="@color/accent_blue" />
+            <TextView
+                android:id="@+id/ftv_text_status"
+                android:layout_width="50dp"
+                android:layout_height="24dp"
+                android:textAlignment="center"
+                android:fontFamily="monospace"
+                android:alpha="1"
+                android:textColor="@color/accent_blue"
+                android:layout_gravity="center"
+                android:text="10/10"
+            />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

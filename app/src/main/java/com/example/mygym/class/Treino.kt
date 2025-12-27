@@ -1,6 +1,7 @@
-package com.example.mygym
+package com.example.mygym.`class`
 
 data class Treino(
+    val id: Int,
     val nome: String,
     val progresso: String,
     val andamento: String,
