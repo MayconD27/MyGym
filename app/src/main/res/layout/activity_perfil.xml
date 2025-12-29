@@ -53,7 +53,8 @@
             android:id="@+id/nome_usuario"
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+            android:padding="3dp"
             android:hint="..."
             android:textColor="@color/text_white"
             android:background="@drawable/shape_bottom_nav_background"
@@ -70,7 +71,7 @@
             android:id="@+id/email_usuario"
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:hint="..."
             android:textColor="@color/text_white"
             android:background="@drawable/shape_bottom_nav_background"
@@ -87,8 +88,9 @@
             android:id="@+id/endereco_usuario"
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:hint="..."
+            android:padding="3dp"
             android:textColor="@color/text_white"
             android:background="@drawable/shape_bottom_nav_background"
         />
@@ -128,9 +130,10 @@
                     android:id="@+id/altura_usuario"
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:hint="..."
                     android:textColor="@color/text_white"
+                    android:padding="3dp"
                     android:background="@drawable/shape_bottom_nav_background"
                     />
             </LinearLayout>
@@ -146,13 +149,14 @@
                     android:layout_height="wrap_content"
                     android:text="Peso"
                     android:textSize="18sp"
+                    android:padding="3dp"
                     android:textColor="@color/text_white"
                     />
                 <EditText
                     android:id="@+id/peso_usuario"
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:hint="..."
                     android:textColor="@color/text_white"
                     android:background="@drawable/shape_bottom_nav_background"
@@ -161,7 +165,7 @@
         </LinearLayout>
         <Button
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:textColor="@color/text_white"
             android:backgroundTint="@color/accent_blue"
             android:layout_marginTop="50dp"
