@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:minWidth="300dp"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bg_popup">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Salvar dados"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#ffff" />
+    <TextView
+         android:textSize="16dp"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:text="Tem certeza que deseja salvar as alterações?"
+         android:textColor="#aaaaaa"
+         android:layout_marginTop="10dp"
+    />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp"
+    >
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Cancelar"
+            android:layout_marginTop="20dp"
+            app:cornerRadius="10dp"
+            android:textColor="#111"
+            android:textSize="16dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/text_white" />
+        <Button
+            android:id="@+id/btn_salvar"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Salvar"
+            android:textSize="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            app:cornerRadius="10dp"
+            android:backgroundTint="@color/accent_blue" />
+    </LinearLayout>
+</LinearLayout>

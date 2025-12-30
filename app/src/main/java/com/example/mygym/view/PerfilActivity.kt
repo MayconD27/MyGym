@@ -1,13 +1,16 @@
 package com.example.mygym.view
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.mygym.R
 import com.example.mygym.databinding.ActivityPerfilBinding
+import com.example.mygym.databinding.DialogSaveBinding
 
 class PerfilActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPerfilBinding
@@ -19,6 +22,9 @@ class PerfilActivity : AppCompatActivity() {
 
         configurarBottomNavigation()
         binding.bottomNavigation.selectedItemId = R.id.nav_perfil
+        binding.saveBtn.setOnClickListener {
+            exibirPopupPersonalizado()
+        }
     }
     private fun configurarBottomNavigation() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
@@ -42,5 +48,22 @@ class PerfilActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+    fun exibirPopupPersonalizado() {
+        val dialog = Dialog(this)
+        val bindingPop = DialogSaveBinding.inflate(layoutInflater)
+        dialog.setContentView(bindingPop.root)
+
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        bindingPop.btnSalvar.setOnClickListener {
+            Toast.makeText(this, "Salvar", Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
+        }
+        bindingPop.btnCancel.setOnClickListener {
+            Toast.makeText(this, "Cancelar", Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 }
