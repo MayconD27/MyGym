@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:minWidth="300dp"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/bg_popup">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Erro"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textColor="@color/text_white"
+    />
+    <TextView
+        android:id="@+id/msg_erro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="..."
+        android:textColor="#aaa"
+        android:textSize="18sp"
+        android:layout_marginVertical="10dp"
+    />
+    <Button
+        android:id="@+id/btn_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cornerRadius = "5dp"
+        android:backgroundTint="@color/accent_blue"
+        android:textColor="@color/text_white"
+        android:textSize="20sp"
+        android:text="Ok"
+    />
+</LinearLayout>

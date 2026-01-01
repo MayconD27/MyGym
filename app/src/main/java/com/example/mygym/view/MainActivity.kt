@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         binding.rvTreinos.layoutManager = LinearLayoutManager(this)
         val adapter = TreinoAdapter(meusTreinos) { treinoClicado ->
             val intent = Intent(this, FichaTreinoActivity::class.java)
+            intent.putExtra("categoria_id",treinoClicado.id )
             startActivity(intent)
         }
         binding.rvTreinos.adapter = adapter
