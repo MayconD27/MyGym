@@ -11,12 +11,20 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mygym.R
 import com.example.mygym.adapter.FichaTreinoAdapter
-import com.example.mygym.adapter.TreinoAdapter
 import com.example.mygym.`class`.FichaTreino
-import com.example.mygym.`class`.Treino
 import com.example.mygym.databinding.ActivityFichaTreinoBinding
 import com.example.mygym.databinding.DialogErrorBinding
 import com.example.mygym.databinding.DialogTimerBinding
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+
+interface  FichaTreinoService{
+    @GET("todos")
+    suspend fun getFichaTreino(): List<FichaTreino>
+}
 
 class FichaTreinoActivity : AppCompatActivity() {
 
@@ -29,10 +37,12 @@ class FichaTreinoActivity : AppCompatActivity() {
         categoria_id = intent.getIntExtra("categoria_id", 0)
         binding = ActivityFichaTreinoBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         if(categoria_id <= 0){
             val message = "Categoria não encontrada"
             popUpError(message)
         }
+
         val minhaFicha = listOf(
             FichaTreino(1, "Supino maquina", 4, 0, "10/12 rep", 60, 1),
             FichaTreino(2, "Crucifixo maquina", 3, 0, "12/15 rep" , 40, 1),
@@ -62,7 +72,26 @@ class FichaTreinoActivity : AppCompatActivity() {
             }
         }
 
+        val retrofit = retrofit2.Retrofit.Builder()
+            .baseUrl("https://jsonplaceholder.typicode.com")
+            .addConverterFactory(retrofit2.converter.gson.GsonConverterFactory.create())
+            .build()
+        val service = retrofit.create(FichaTreinoService::class.java)
 
+        lifecycleScope.launch {
+            try {
+                val fichaTreino = service.getFichaTreino()
+                if(fichaTreino.isNotEmpty()){
+                    android.util.Log.d("API_DEBUG", "Dados recebidos: $fichaTreino")
+                    popUpAlert("${fichaTreino.size}")
+                }else{
+                    popUpAlert("Teste")
+                }
+            }
+            catch (e: Exception){
+                e.printStackTrace()
+            }
+        }
         binding.rvFicha.layoutManager = LinearLayoutManager(this)
         val adapter = FichaTreinoAdapter(minhaFicha) { treinoClicado ->
             if(startTrain && (treinoClicado.qnt_rep > treinoClicado.qnt_feita)){
@@ -79,6 +108,7 @@ class FichaTreinoActivity : AppCompatActivity() {
         }
         binding.rvFicha.adapter = adapter
     }
+
     fun exibirPopUp(id:Int , time: Int) {
         val dialog = Dialog(this)
         val bindingpopUp = DialogTimerBinding.inflate(layoutInflater)
@@ -109,7 +139,6 @@ class FichaTreinoActivity : AppCompatActivity() {
         dialog.setOnDismissListener { handler.removeCallbacks(runnable) }
         dialog.show()
     }
-
     fun popUpError(message: String){
         val dialog = Dialog(this)
         val bindingPopUp = DialogErrorBinding.inflate(layoutInflater)
