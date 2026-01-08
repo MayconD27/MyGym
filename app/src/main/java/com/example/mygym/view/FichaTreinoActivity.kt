@@ -22,9 +22,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 
 interface  FichaTreinoService{
-    @GET("todos")
-    suspend fun getFichaTreino(): List<FichaTreino>
+    @GET("fichaTreino")
+    suspend fun getFichaTreino(): FichaTreinoResponse
 }
+data class FichaTreinoResponse(
+    val data: List<FichaTreino>
+)
 
 class FichaTreinoActivity : AppCompatActivity() {
 
@@ -42,13 +45,16 @@ class FichaTreinoActivity : AppCompatActivity() {
             val message = "Categoria não encontrada"
             popUpError(message)
         }
+        var minhaFicha = listOf<FichaTreino>()
+        val adapter = FichaTreinoAdapter(minhaFicha) { treinoClicado ->
+            if(startTrain && (treinoClicado.qnt_rep > treinoClicado.qnt_feita)){
+                exibirPopUp(treinoClicado.id, treinoClicado.time)
+            }else{
+                val message = "O treino ainda não foi iniciado, para inciar clique em inicar treino"
+                popUpAlert(message)
+            }
 
-        val minhaFicha = listOf(
-            FichaTreino(1, "Supino maquina", 4, 0, "10/12 rep", 60, 1),
-            FichaTreino(2, "Crucifixo maquina", 3, 0, "12/15 rep" , 40, 1),
-            FichaTreino(3, "Supino inclinado 45º", 3, 0, "12/15 rep", 30, 1)
-        )
-
+        }
         when(categoria_id){
             1 -> {
                 binding.imageHeader.setImageResource(R.drawable.ic_peitoral)
@@ -73,35 +79,28 @@ class FichaTreinoActivity : AppCompatActivity() {
         }
 
         val retrofit = retrofit2.Retrofit.Builder()
-            .baseUrl("https://jsonplaceholder.typicode.com")
+            .baseUrl("http://10.0.2.2:8000/api/")
             .addConverterFactory(retrofit2.converter.gson.GsonConverterFactory.create())
             .build()
         val service = retrofit.create(FichaTreinoService::class.java)
 
         lifecycleScope.launch {
             try {
-                val fichaTreino = service.getFichaTreino()
+                val response = service.getFichaTreino()
+                val fichaTreino = response.data
+                android.util.Log.d("RETROFIT_RES", "Lista recebida: $fichaTreino")
                 if(fichaTreino.isNotEmpty()){
-                    android.util.Log.d("API_DEBUG", "Dados recebidos: $fichaTreino")
-                    popUpAlert("${fichaTreino.size}")
+                    adapter.atualizarLista(fichaTreino)
                 }else{
-                    popUpAlert("Teste")
+                    popUpAlert("Nenhum treino foi registrado")
                 }
             }
             catch (e: Exception){
+                android.util.Log.e("RETROFIT_ERRO", "Falha: ${e.message}")
                 e.printStackTrace()
             }
         }
         binding.rvFicha.layoutManager = LinearLayoutManager(this)
-        val adapter = FichaTreinoAdapter(minhaFicha) { treinoClicado ->
-            if(startTrain && (treinoClicado.qnt_rep > treinoClicado.qnt_feita)){
-                exibirPopUp(treinoClicado.id, treinoClicado.time)
-            }else{
-                val message = "O treino ainda não foi iniciado, para inciar clique em inicar treino"
-                popUpAlert(message)
-            }
-
-        }
         binding.btnStartTrain.setOnClickListener {
             binding.btnStartTrain.alpha = 0f
             startTrain = true

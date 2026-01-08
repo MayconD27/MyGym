@@ -10,6 +10,16 @@ import com.example.mygym.R
 import com.example.mygym.`class`.Treino
 import com.example.mygym.adapter.TreinoAdapter
 import com.example.mygym.databinding.ActivityMainBinding
+import retrofit2.http.GET
+
+interface Treino {
+    @GET("treino")
+    suspend fun getTreino(): TreinoResponse
+}
+data class TreinoResponse(
+    val data: List<Treino>
+)
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

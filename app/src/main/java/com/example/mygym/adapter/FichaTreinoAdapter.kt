@@ -10,7 +10,7 @@ import com.example.mygym.R
 import com.example.mygym.`class`.FichaTreino
 import com.example.mygym.`class`.Treino
 
-class FichaTreinoAdapter(private val lista: List<FichaTreino>, private val onItemClick: (FichaTreino) -> Unit): RecyclerView.Adapter<
+class FichaTreinoAdapter(private var lista: List<FichaTreino>, private val onItemClick: (FichaTreino) -> Unit): RecyclerView.Adapter<
     FichaTreinoAdapter.FichaTreinoViewHolder>() {
 
     class FichaTreinoViewHolder(view: View) : RecyclerView.ViewHolder(view){
@@ -35,7 +35,7 @@ class FichaTreinoAdapter(private val lista: List<FichaTreino>, private val onIte
     ) {
         val treino = lista[position]
         holder.fvtTreino.text = treino.nome
-        holder.descFicha.text = treino.desc
+        holder.descFicha.text = treino.descricao
 
         val qnt_rep = treino.qnt_rep
         val qnt_feita = treino.qnt_feita
@@ -58,7 +58,11 @@ class FichaTreinoAdapter(private val lista: List<FichaTreino>, private val onIte
     override fun getItemCount(): Int {
         return lista.size
     }
-
+    // Dentro da classe FichaTreinoAdapter
+    fun atualizarLista(novaLista: List<FichaTreino>) {
+        this.lista = novaLista // Atualiza a variável 'lista' definida lá no topo
+        notifyDataSetChanged()
+    }
 
 
 }
