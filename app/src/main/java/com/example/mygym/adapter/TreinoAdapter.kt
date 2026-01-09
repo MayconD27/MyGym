@@ -7,9 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mygym.R
+import com.example.mygym.`class`.FichaTreino
 import com.example.mygym.`class`.Treino
 
-class TreinoAdapter(private val lista: List<Treino>, private val onItemClick: (Treino) -> Unit) : RecyclerView.Adapter<TreinoAdapter.TreinoViewHolder>() {
+class TreinoAdapter(private var lista: List<Treino>, private val onItemClick: (Treino) -> Unit) : RecyclerView.Adapter<TreinoAdapter.TreinoViewHolder>() {
 
     // Cria o visual: Infla o seu XML do card
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TreinoViewHolder {
@@ -32,7 +33,23 @@ class TreinoAdapter(private val lista: List<Treino>, private val onItemClick: (T
         holder.itemView.setOnClickListener {
             onItemClick(treino)
         }
-        holder.imageBackground.setImageResource(treino.icone)
+        when(treino.icone){
+            1 -> {
+                holder.imageBackground.setImageResource(R.drawable.ic_peitoral)
+            }
+            2 -> {
+                holder.imageBackground.setImageResource(R.drawable.ic_costas)
+            }
+            3 ->{
+                holder.imageBackground.setImageResource(R.drawable.ic_pernas)
+            }
+            4 -> {
+                holder.imageBackground.setImageResource(R.drawable.ic_braco)
+            }
+            else ->{
+                holder.imageBackground.setImageResource(R.drawable.ic_peitoral)
+            }
+        }
         holder.tvTitulo.text = treino.nome
         holder.tvProgress.text = treino.andamento
         val progress = treino.progresso
@@ -57,7 +74,10 @@ class TreinoAdapter(private val lista: List<Treino>, private val onItemClick: (T
     }
 
     override fun getItemCount() = lista.size
-
+    fun atualizarLista(novaLista: List<Treino>) {
+        this.lista = novaLista // Atualiza a variável 'lista' definida lá no topo
+        notifyDataSetChanged()
+    }
 
 
 

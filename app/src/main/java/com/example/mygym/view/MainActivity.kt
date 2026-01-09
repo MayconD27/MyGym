@@ -11,8 +11,10 @@ import com.example.mygym.`class`.Treino
 import com.example.mygym.adapter.TreinoAdapter
 import com.example.mygym.databinding.ActivityMainBinding
 import retrofit2.http.GET
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
-interface Treino {
+interface TreinoService {
     @GET("treino")
     suspend fun getTreino(): TreinoResponse
 }
@@ -28,12 +30,8 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val meusTreinos = listOf(
-            Treino(1,"Peitoral", "10/10", "Finalizado", R.drawable.ic_peitoral),
-            Treino(2,"Costas", "8/12", "Em progresso", R.drawable.ic_costas),
-            Treino(3,"Pernas", "0/10", "Aguardando inicio", R.drawable.ic_pernas),
-            Treino(4, "Braço", "0/10", "Aguardando inicio", R.drawable.ic_braco),
-        )
+
+        var meusTreinos = listOf<Treino>()
         binding.rvTreinos.layoutManager = LinearLayoutManager(this)
         val adapter = TreinoAdapter(meusTreinos) { treinoClicado ->
             val intent = Intent(this, FichaTreinoActivity::class.java)
@@ -43,6 +41,22 @@ class MainActivity : AppCompatActivity() {
         binding.rvTreinos.adapter = adapter
         configurarBottomNavigation()
         binding.bottomNavigation.selectedItemId = R.id.nav_treino
+        val retrofit = retrofit2.Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:8000/api/")
+            .addConverterFactory(retrofit2.converter.gson.GsonConverterFactory.create())
+            .build()
+        val service = retrofit.create(TreinoService::class.java)
+
+        lifecycleScope.launch {
+            val response = service.getTreino()
+            val treino = response.data
+            android.util.Log.d("RETROFIT_RES", "Lista recebida: $treino")
+            if(treino.isNotEmpty()){
+                adapter.atualizarLista(treino)
+            }else{
+                Toast.makeText(this@MainActivity, "Nenhum treino foi registrado", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
     private fun configurarBottomNavigation() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->

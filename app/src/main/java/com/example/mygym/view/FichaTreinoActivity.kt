@@ -19,16 +19,24 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
+import retrofit2.http.Field
 import retrofit2.http.GET
+import retrofit2.http.POST
 
-interface  FichaTreinoService{
-    @GET("fichaTreino")
-    suspend fun getFichaTreino(): FichaTreinoResponse
-}
+
 data class FichaTreinoResponse(
     val data: List<FichaTreino>
 )
-
+data class FichaTreinoRequest(
+    val categoria_id: Int
+)
+interface  FichaTreinoService{
+    @POST("fichaTreino")
+    suspend fun getFichaTreino(
+        @Body request: FichaTreinoRequest
+    ): FichaTreinoResponse
+}
 class FichaTreinoActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFichaTreinoBinding
@@ -38,6 +46,7 @@ class FichaTreinoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         categoria_id = intent.getIntExtra("categoria_id", 0)
+
         binding = ActivityFichaTreinoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -79,14 +88,15 @@ class FichaTreinoActivity : AppCompatActivity() {
         }
 
         val retrofit = retrofit2.Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8000/api/")
+                .baseUrl("http://10.0.2.2:8000/api/")
             .addConverterFactory(retrofit2.converter.gson.GsonConverterFactory.create())
             .build()
         val service = retrofit.create(FichaTreinoService::class.java)
 
         lifecycleScope.launch {
             try {
-                val response = service.getFichaTreino()
+                val requestBody = FichaTreinoRequest(categoria_id)
+                val response = service.getFichaTreino(requestBody)
                 val fichaTreino = response.data
                 android.util.Log.d("RETROFIT_RES", "Lista recebida: $fichaTreino")
                 if(fichaTreino.isNotEmpty()){
