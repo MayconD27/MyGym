@@ -55,33 +55,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/img_status_icon_finish"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_check"
-                android:alpha="0"
-                app:tint="@color/accent_blue" />
-            <ImageView
-                android:id="@+id/img_status_icon_stop"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_stop"
-                android:alpha="0"
-                app:tint="@color/accent_blue" />
             <TextView
                 android:id="@+id/text_status"
                 android:layout_width="50dp"
-                android:layout_height="24dp"
+                android:layout_height="match_parent"
                 android:textAlignment="center"
                 android:fontFamily="monospace"
                 android:alpha="1"
+                android:gravity="center"
                 android:textColor="@color/accent_blue"
                 android:layout_gravity="center"
-                android:text="10/10"
+                android:textSize="20sp"
+                android:text="10"
             />
         </FrameLayout>
 

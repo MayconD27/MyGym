@@ -36,12 +36,22 @@ interface  FichaTreinoService{
     suspend fun getFichaTreino(
         @Body request: FichaTreinoRequest
     ): FichaTreinoResponse
+
+    @POST("atualizarProgresso")
+    suspend fun atualizarProgresso(
+        @Body request: AtualizarProgressoRequest
+    ): retrofit2.Response<Unit>
 }
+data class AtualizarProgressoRequest(
+    val id: Int,
+    val qnt_feita: Int
+)
 class FichaTreinoActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFichaTreinoBinding
     private var startTrain = false
     private var categoria_id = 0
+    private lateinit var adapter: FichaTreinoAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -55,12 +65,20 @@ class FichaTreinoActivity : AppCompatActivity() {
             popUpError(message)
         }
         var minhaFicha = listOf<FichaTreino>()
-        val adapter = FichaTreinoAdapter(minhaFicha) { treinoClicado ->
+        adapter = FichaTreinoAdapter(minhaFicha) { treinoClicado ->
             if(startTrain && (treinoClicado.qnt_rep > treinoClicado.qnt_feita)){
-                exibirPopUp(treinoClicado.id, treinoClicado.time)
-            }else{
+                exibirPopUp(treinoClicado.id, treinoClicado.time){
+                    treinoClicado.qnt_feita ++
+                    adapter.notifyDataSetChanged()
+                    atualizarProgressoNoServidor(treinoClicado.id, treinoClicado.qnt_feita)
+                }
+            }else if(startTrain && (treinoClicado.qnt_rep == treinoClicado.qnt_feita)){
+                val message = "Você já completou este exercicio"
+                popUpAlert("Atenção", message)
+            }
+            else{
                 val message = "O treino ainda não foi iniciado, para inciar clique em inicar treino"
-                popUpAlert(message)
+                popUpAlert("Erro",message)
             }
 
         }
@@ -102,7 +120,7 @@ class FichaTreinoActivity : AppCompatActivity() {
                 if(fichaTreino.isNotEmpty()){
                     adapter.atualizarLista(fichaTreino)
                 }else{
-                    popUpAlert("Nenhum treino foi registrado")
+                    popUpAlert("Atenção","Nenhum treino foi registrado")
                 }
             }
             catch (e: Exception){
@@ -118,7 +136,7 @@ class FichaTreinoActivity : AppCompatActivity() {
         binding.rvFicha.adapter = adapter
     }
 
-    fun exibirPopUp(id:Int , time: Int) {
+    fun exibirPopUp(id:Int , time: Int, onFinish: () -> Unit) {
         val dialog = Dialog(this)
         val bindingpopUp = DialogTimerBinding.inflate(layoutInflater)
         dialog.setContentView(bindingpopUp.root)
@@ -140,6 +158,7 @@ class FichaTreinoActivity : AppCompatActivity() {
                     handler.postDelayed(this, 1000)
                 } else {
                     dialog.dismiss()
+                    onFinish()
                 }
             }
         }
@@ -161,10 +180,11 @@ class FichaTreinoActivity : AppCompatActivity() {
         }
         dialog.show()
     }
-    fun popUpAlert(message: String){
+    fun popUpAlert(title: String, message: String){
         val dialog = Dialog(this)
         val bindingPopUp = DialogErrorBinding.inflate(layoutInflater)
         bindingPopUp.msgErro.text = message
+        bindingPopUp.title.text = title
         dialog.setContentView(bindingPopUp.root)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         bindingPopUp.btnError.setOnClickListener{
@@ -173,4 +193,25 @@ class FichaTreinoActivity : AppCompatActivity() {
         dialog.show()
     }
 
+    private fun atualizarProgressoNoServidor(id: Int, novaQuantidade: Int) {
+        // Reutilizamos o service criado no onCreate
+        val retrofit = retrofit2.Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:8000/api/")
+            .addConverterFactory(retrofit2.converter.gson.GsonConverterFactory.create())
+            .build()
+        val service = retrofit.create(FichaTreinoService::class.java)
+
+        lifecycleScope.launch {
+            try {
+                val request = AtualizarProgressoRequest(id, novaQuantidade)
+                val response = service.atualizarProgresso(request)
+
+                if (response.isSuccessful) {
+                    android.util.Log.d("API_UPDATE", "Progresso atualizado com sucesso!")
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("API_UPDATE", "Erro ao sincronizar: ${e.message}")
+            }
+        }
+    }
 }

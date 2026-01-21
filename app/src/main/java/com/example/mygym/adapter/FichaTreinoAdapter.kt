@@ -43,6 +43,7 @@ class FichaTreinoAdapter(private var lista: List<FichaTreino>, private val onIte
 
         if(qnt_rep == qnt_feita){
             holder.imageStatus.alpha = 1f
+            holder.fvtStatus.visibility = View.GONE
         }
         else{
             holder.imageStatus.alpha = 0f

@@ -22,8 +22,6 @@ class TreinoAdapter(private var lista: List<Treino>, private val onItemClick: (T
         val tvStatus: TextView = view.findViewById(R.id.text_status)
         val tvProgress: TextView = view.findViewById(R.id.tv_workout_status)
         val imageBackground: ImageView = view.findViewById(R.id.img_background_muscle)
-        val imageStatusStart : ImageView = view.findViewById(R.id.img_status_icon_finish)
-        val imageStatusStop : ImageView = view.findViewById(R.id.img_status_icon_stop)
 
     }
 
@@ -52,25 +50,7 @@ class TreinoAdapter(private var lista: List<Treino>, private val onItemClick: (T
         }
         holder.tvTitulo.text = treino.nome
         holder.tvProgress.text = treino.andamento
-        val progress = treino.progresso
-        val partes = progress.split("/")
-        val atual = partes[0].toInt()
-        val total = partes[1].toInt()
-
-        if (atual >= total) {
-            holder.imageStatusStart.alpha = 1f
-            holder.tvStatus.visibility = View.GONE
-        }
-        else if(atual == 0){
-            holder.imageStatusStart.alpha = 0f
-            holder.imageStatusStop.alpha = 1f
-            holder.tvStatus.visibility = View.GONE
-        }
-        else {
-            holder.imageStatusStart.alpha = 0f
-            holder.tvStatus.text = treino.progresso
-            holder.tvStatus.visibility = View.VISIBLE
-        }
+        holder.tvStatus.text = treino.progresso
     }
 
     override fun getItemCount() = lista.size
