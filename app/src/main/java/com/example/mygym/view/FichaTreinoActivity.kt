@@ -47,7 +47,6 @@ data class AtualizarProgressoRequest(
     val qnt_feita: Int
 )
 class FichaTreinoActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityFichaTreinoBinding
     private var startTrain = false
     private var categoria_id = 0
@@ -59,6 +58,15 @@ class FichaTreinoActivity : AppCompatActivity() {
 
         binding = ActivityFichaTreinoBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val prefs = getSharedPreferences("MyGymPrefs", MODE_PRIVATE)
+        val prefKey = getPrefKey()
+        val alreadyStartedToday = prefs.getBoolean(prefKey, false)
+
+        // Verifica ao abrir a tela se o botão deve sumir
+        if (alreadyStartedToday) {
+            binding.btnStartTrain.visibility = android.view.View.GONE
+            startTrain = true
+        }
 
         if(categoria_id <= 0){
             val message = "Categoria não encontrada"
@@ -130,8 +138,9 @@ class FichaTreinoActivity : AppCompatActivity() {
         }
         binding.rvFicha.layoutManager = LinearLayoutManager(this)
         binding.btnStartTrain.setOnClickListener {
-            binding.btnStartTrain.alpha = 0f
             startTrain = true
+            binding.btnStartTrain.visibility = android.view.View.GONE // Esconde de vez
+            prefs.edit().putBoolean(prefKey, true).apply()
         }
         binding.rvFicha.adapter = adapter
     }
@@ -213,5 +222,10 @@ class FichaTreinoActivity : AppCompatActivity() {
                 android.util.Log.e("API_UPDATE", "Erro ao sincronizar: ${e.message}")
             }
         }
+    }
+
+    private fun getPrefKey(): String {
+        val date = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date())
+        return "train_started_${categoria_id}_$date"
     }
 }

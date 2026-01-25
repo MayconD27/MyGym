@@ -3,6 +3,7 @@
         android:id="@+id/nav_treino"
         android:icon="@drawable/ic_dumbbell"
         android:title="Treino" />
+
     <item
         android:id="@+id/nav_perfil"
         android:icon="@drawable/ic_person"
