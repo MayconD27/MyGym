@@ -77,6 +77,8 @@ class FichaTreinoActivity : AppCompatActivity() {
             if(startTrain && (treinoClicado.qnt_rep > treinoClicado.qnt_feita)){
                 exibirPopUp(treinoClicado.id, treinoClicado.time){
                     treinoClicado.qnt_feita ++
+                    val progressoKey = "progresso_${treinoClicado.id}_${getPrefKey()}"
+                    prefs.edit().putInt(progressoKey, treinoClicado.qnt_feita).apply()
                     adapter.notifyDataSetChanged()
                     atualizarProgressoNoServidor(treinoClicado.id, treinoClicado.qnt_feita)
                 }
@@ -124,12 +126,18 @@ class FichaTreinoActivity : AppCompatActivity() {
                 val requestBody = FichaTreinoRequest(categoria_id)
                 val response = service.getFichaTreino(requestBody)
                 val fichaTreino = response.data
-                android.util.Log.d("RETROFIT_RES", "Lista recebida: $fichaTreino")
-                if(fichaTreino.isNotEmpty()){
-                    adapter.atualizarLista(fichaTreino)
-                }else{
-                    popUpAlert("Atenção","Nenhum treino foi registrado")
+
+                fichaTreino.forEach { treino ->
+                    val progressoKey = "progresso_${treino.id}_${getPrefKey()}"
+                    val salvoLocal = prefs.getInt(progressoKey, -1)
+
+                    // Se o valor local for maior que o do servidor, usamos o local
+                    if (salvoLocal > treino.qnt_feita) {
+                        treino.qnt_feita = salvoLocal
+                    }
                 }
+
+                adapter.atualizarLista(fichaTreino)
             }
             catch (e: Exception){
                 android.util.Log.e("RETROFIT_ERRO", "Falha: ${e.message}")
@@ -227,5 +235,12 @@ class FichaTreinoActivity : AppCompatActivity() {
     private fun getPrefKey(): String {
         val date = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date())
         return "train_started_${categoria_id}_$date"
+    }
+
+    private fun salvarProgressoLocal(exercicioId: Int, quantidade: Int) {
+        val prefs = getSharedPreferences("MyGymPrefs", MODE_PRIVATE)
+        val date = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(java.util.Date())
+        // Chave única: exercicio_ID_DATA
+        prefs.edit().putInt("progresso_${exercicioId}_$date", quantidade).apply()
     }
 }

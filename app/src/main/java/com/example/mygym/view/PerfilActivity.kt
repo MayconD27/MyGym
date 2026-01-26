@@ -8,17 +8,60 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.mygym.R
+import com.example.mygym.`class`.Treino
+import com.example.mygym.`class`.User
 import com.example.mygym.databinding.ActivityPerfilBinding
 import com.example.mygym.databinding.DialogSaveBinding
+import kotlinx.coroutines.launch
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.PUT
+
+
+interface PerfilService {
+    @GET("user/1")
+    suspend fun getPerfil(): UserResponse
+
+    @PUT("user/1")
+    suspend fun updatePerfil(@Body user: User): retrofit2.Response<UserResponse>
+}
+data class UserResponse(
+    val data: List<User>
+)
 
 class PerfilActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPerfilBinding
+    private lateinit var service: PerfilService
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityPerfilBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val retrofit = retrofit2.Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:8000/api/")
+            .addConverterFactory(retrofit2.converter.gson.GsonConverterFactory.create())
+            .build()
+        service = retrofit.create(PerfilService::class.java)
+        lifecycleScope.launch {
+            try {
+                val response = service.getPerfil()
+                val userList = response.data
+                if (userList.isNotEmpty()) {
+                    var usuario = userList[0]
+                    binding.nomeUsuario.setText(usuario.nome.toString())
+                    binding.emailUsuario.setText(usuario.email.toString())
+                    binding.enderecoUsuario.setText(usuario.endereco.toString())
+                    binding.alturaUsuario.setText(usuario.altura.toString())
+                    binding.pesoUsuario.setText(usuario.peso.toString())
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("RETROFIT_RES", "Falha total: ${e.message}", e)
+                Toast.makeText(this@PerfilActivity, "Erro: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
 
         configurarBottomNavigation()
         binding.bottomNavigation.selectedItemId = R.id.nav_perfil
