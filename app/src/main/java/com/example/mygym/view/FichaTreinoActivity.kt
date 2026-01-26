@@ -69,7 +69,7 @@ class FichaTreinoActivity : AppCompatActivity() {
         }
 
         if(categoria_id <= 0){
-            val message = "Categoria não encontrada"
+            val message = "Categoria não encontradaa"
             popUpError(message)
         }
         var minhaFicha = listOf<FichaTreino>()
