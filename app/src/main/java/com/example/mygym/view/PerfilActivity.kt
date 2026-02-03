@@ -100,8 +100,31 @@ class PerfilActivity : AppCompatActivity() {
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         bindingPop.btnSalvar.setOnClickListener {
-            Toast.makeText(this, "Salvar", Toast.LENGTH_SHORT).show()
-            dialog.dismiss()
+            val usuarioEditado = User(
+                id = 1,
+                nome = binding.nomeUsuario.text.toString(),
+                email = binding.emailUsuario.text.toString(),
+                endereco = binding.enderecoUsuario.text.toString(),
+                altura = binding.alturaUsuario.text.toString(),
+                peso = binding.pesoUsuario.text.toString().toFloat()
+            )
+
+            // 2. Usar o lifecycleScope para chamar a susped function do Retrofit
+            lifecycleScope.launch {
+                try {
+                    val response = service.updatePerfil(usuarioEditado)
+                    if (response.isSuccessful) {
+                        Toast.makeText(this@PerfilActivity, "Dados atualizados com sucesso!", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    } else {
+                        Toast.makeText(this@PerfilActivity, "Erro no servidor: ${response.code()}", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    android.util.Log.e("RETROFIT_PUT", "Falha: ${e.message}")
+                    Toast.makeText(this@PerfilActivity, "Erro de rede!", Toast.LENGTH_SHORT).show()
+                }
+            }
+
         }
         bindingPop.btnCancel.setOnClickListener {
             Toast.makeText(this, "Cancelar", Toast.LENGTH_SHORT).show()
